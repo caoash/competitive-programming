@@ -1,7 +1,3 @@
-/*
- * Michael Cao USACO Template
- */
-
 #include <bits/stdc++.h>
 using namespace std;
 
