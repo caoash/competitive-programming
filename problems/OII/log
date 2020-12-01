@@ -1,0 +1,37 @@
+19:10 read p1
+19:12 think about p1
+- greedy?
+- k >= 3 trivial?
+    - just greedily replace
+    - if x == x - 1, replace x
+- k = 2
+    - try 121212 and 21212 and find which is shorter 
+19:28 AC on p1
+19:28 reading p2
+- 
+19:28 also reading p3
+- given an array and integer B, choose elements from array that sum to exactly B with min max occurance
+19:32 thinking about p3
+- unbounded knapsack except you want to minimize same counts
+- break into powers of 2 trick?
+    - fix the element that you use max # times Y and X times
+        - O(sum of a[i])
+        - don't know Y, only X
+        - bounded knapsack
+        - binary search?
+    - problem reduces to given remaining elements with counts X can you form B - (Y * X)
+        - you can solve this in O(nblogn)
+- binary search on max # times you use any item
+- bounded knapsack with each element used at most Y times
+    - O(NB)
+    - can you make B?
+    - dp[prefix][w] = min number of ith note needed to make w
+    - NBlogB
+- group together equal ones
+- bounded knapsack with distinct values
+- let dp[prefix][w] = {min max overall, min you need from curr} 
+    dp[prefix][w] = min(dp[prefix - 1][w - (x * a[i])] + x);
+- 
+
+20:23 break?
+

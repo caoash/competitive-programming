@@ -1,0 +1,206 @@
+/*
+Honestly, I have no idea how to come up with this in contest. I initially made the observation to deal with X and Y
+independently, but couldn't get much further. The editorial solution is to observe that if you alternate the signs of values
+you can create positive and negative values by shifting some contigous subsequence of the sorted array.
+*/
+
+#pragma GCC target ("sse4")
+
+#include <bits/stdc++.h>
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+ 
+typedef long long ll;
+typedef long double ld;
+typedef complex<ld> cd;
+
+typedef pair<int, int> pi;
+typedef pair<ll,ll> pl;
+typedef pair<ld,ld> pd;
+typedef pair<int, pi> pii;
+
+typedef vector<int> vi;
+typedef vector<ld> vd;
+typedef vector<ll> vl;
+typedef vector<pi> vpi;
+typedef vector<pl> vpl;
+typedef vector<cd> vcd;
+
+#define fax(i, a) for (int i = 0; i < (a); i++)
+#define f0x(i, a, b) for (int i = (a); i < (b); i++)
+#define f0xd(i,a,b) for (int i = (b)-1; i >= (a); i--)
+#define faxd(i,a) for (int i = (a)-1; i >= 0; i--)
+#define trav(a, x) for (auto& a : x)
+#define memeset memset
+
+#define mp make_pair
+#define pb push_back
+#define f first
+#define s second
+#define lb lower_bound
+#define ub upper_bound
+
+#define sz(x) (int)x.size()
+#define all(x) begin(x), end(x)
+#define rsz resize
+
+template<class T> void ckmin(T &a, T b) { a = min(a, b); }
+template<class T> void ckmax(T &a, T b) { a = max(a, b); }
+
+template <class T, int ...Ns> struct BIT {
+    T val = 0;
+    void upd(T v) { val += v; }
+    T query() { return val; }
+};
+ 
+template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
+    BIT<T,Ns...> bit[N + 1];
+    template<typename... Args> void upd(int pos, Args... args) {
+        for (; pos <= N; pos += (pos&-pos)) bit[pos].upd(args...);
+    }
+    template<typename... Args> T sum(int r, Args... args) {
+        T res = 0; for (; r; r -= (r&-r)) res += bit[r].query(args...); 
+        return res;
+    }
+    template<typename... Args> T query(int l, int r, Args... args) {
+        return sum(r,args...)-sum(l-1,args...);
+    }
+};
+
+namespace input {
+    template<class T> void re(complex<T>& x);
+    template<class T1, class T2> void re(pair<T1,T2>& p);
+    template<class T> void re(vector<T>& a);
+    template<class T, size_t SZ> void re(array<T,SZ>& a);
+
+    template<class T> void re(T& x) { cin >> x; }
+    void re(double& x) { string t; re(t); x = stod(t); }
+    void re(ld& x) { string t; re(t); x = stold(t); }
+    template<class T, class... Ts> void re(T& t, Ts&... ts) { 
+        re(t); re(ts...); 
+    }
+
+    template<class T> void re(complex<T>& x) { T a,b; re(a,b); x = cd(a,b); }
+    template<class T1, class T2> void re(pair<T1,T2>& p) { re(p.f,p.s); }
+    template<class T> void re(vector<T>& a) { fax(i,sz(a)) re(a[i]); }
+    template<class T, size_t SZ> void re(array<T,SZ>& a) { fax(i,SZ) re(a[i]); }
+}
+
+using namespace input;
+
+namespace output {
+    void pr(int x) { cout << x; }
+    void pr(long x) { cout << x; }
+    void pr(ll x) { cout << x; }
+    void pr(unsigned x) { cout << x; }
+    void pr(unsigned long x) { cout << x; }
+    void pr(unsigned long long x) { cout << x; }
+    void pr(float x) { cout << x; }
+    void pr(double x) { cout << x; }
+    void pr(ld x) { cout << x; }
+    void pr(char x) { cout << x; }
+    void pr(const char* x) { cout << x; }
+    void pr(const string& x) { cout << x; }
+    void pr(bool x) { pr(x ? "true" : "false"); }
+    
+    template<class T1, class T2> void pr(const pair<T1,T2>& x);
+    template<class T> void pr(const T& x);
+    
+    template<class T, class... Ts> void pr(const T& t, const Ts&... ts) { 
+        pr(t); pr(ts...); 
+    }
+    template<class T1, class T2> void pr(const pair<T1,T2>& x) { 
+        pr("{",x.f,", ",x.s,"}"); 
+    }
+    template<class T> void pr(const T& x) { 
+        pr("{"); // const iterator needed for vector<bool>
+        bool fst = 1; for (const auto& a: x) pr(!fst?", ":"",a), fst = 0; 
+        pr("}");
+    }
+    
+    void ps() { pr("\n"); } // print w/ spaces
+    template<class T, class... Ts> void ps(const T& t, const Ts&... ts) { 
+        pr(t); if (sizeof...(ts)) pr(" "); ps(ts...); 
+    }
+    
+    void pc() { pr("]\n"); } // debug w/ commas
+    template<class T, class... Ts> void pc(const T& t, const Ts&... ts) { 
+        pr(t); if (sizeof...(ts)) pr(", "); pc(ts...); 
+    }
+    #define dbg(x...) pr("[",#x,"] = ["), pc(x);
+}
+
+using namespace output;
+
+namespace io {
+    void setIn(string s) { freopen(s.c_str(),"r",stdin); }
+    void setOut(string s) { freopen(s.c_str(),"w",stdout); }
+    void setIO(string s = "") {
+        ios_base::sync_with_stdio(0); cin.tie(0); // fast I/O
+        if (sz(s)) { setIn(s+".in"), setOut(s+".out"); } // for USACO
+    }
+}
+
+using namespace io;
+
+mt19937 rnd(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+const int MOD = 1000000007; // 998244353
+const ll INF = 1e18;
+const int MX = 200005;
+const ld PI = 4*atan((ld)1);
+
+int n; vi x, y; bool cng[MX][2];
+
+vpi solve(vi &a, int v){
+	// dbg(a);
+	int cnt = 0;
+	vpi ret;
+	fax(i, n - 1){
+		if(cng[i][v] != cng[i + 1][v]){
+			++cnt;
+		}
+	}
+	int pos = n - cnt - 1;
+	int rpos = pos, lpos = pos; 
+	bool rrec = cng[0][v], lrec = cng[0][v];
+	ret.pb(mp(a[pos], cng[0][v]));
+	f0x(i, 1, n){
+		if(cng[i][v] != cng[i - 1][v]){
+			rrec = !rrec;
+			ret.pb(mp(a[++rpos], rrec));
+		}
+		else{
+			lrec = !lrec;
+			ret.pb(mp(a[--lpos], lrec));
+		}
+	}
+	return ret;
+}
+
+int main() {
+    setIO(); 
+   	re(n); 
+   	fax(i, n) {
+   		int a, b; re(a, b);
+   		x.pb(a), y.pb(b);
+   	}
+   	fax(i, n) {
+   		int x; re(x);
+   		if(x == 1 || x == 4){
+   			cng[i][0] = true;
+   		}
+   		if(x == 1 || x == 2){
+   			cng[i][1] = true;
+   		}
+   	}
+   	sort(all(x)); sort(all(y));
+   	vpi fst = solve(x, 0); 
+   	vpi sec = solve(y, 1);
+   	fax(i, n){
+   		pr(fst[i].s ? '+' : '-', fst[i].f, " ", sec[i].s ? '+' : '-', sec[i].f, '\n');
+   	}
+}
