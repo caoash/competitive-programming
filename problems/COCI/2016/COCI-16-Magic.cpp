@@ -1,3 +1,7 @@
+/*
+ * Do rerooting DP since there can only be one non-1 node on a path.
+ */
+
 #include <bits/stdc++.h> 
 using namespace std;
 
