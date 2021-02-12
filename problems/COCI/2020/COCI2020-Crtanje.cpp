@@ -108,7 +108,7 @@ using namespace output;
 #define dbg(x...)
 #endif
 
-string ret[105][105];
+string ret[1005][1005];
 
 int main(){
 #ifdef mikey 
@@ -122,13 +122,12 @@ int main(){
     vi cv(n);
     for (int i = 0; i < n; i++) {
         if (i > 0) {
-            if (s[i - 1] == '+' && s[i] != '-') ++cur;
-            if (s[i] == '-' && s[i - 1] != '+') --cur;
+            if (s[i - 1] == '^' && s[i] != 'v') ++cur;
+            if (s[i] == 'v' && s[i - 1] != '^') --cur;
         }
         cv[i] = cur;
         mn = min(mn, cur);
         mx = max(mx, cur);
-        dbg(i, cv[i]);    
     }
     for (int i = 0; i < n; i++) {
         // cout << i << " " << cur << '\n';
@@ -136,8 +135,8 @@ int main(){
         for (int j = 0; j <= mx - mn; j++) {
             if (j != (mx - mn + 1) - pos - 1) ret[j][i] = '.';
             else {
-                if (s[i] == '+') ret[j][i] = "/";
-                else if (s[i] == '-') ret[j][i] = "\\";
+                if (s[i] == '^') ret[j][i] = "/";
+                else if (s[i] == 'v') ret[j][i] = "\\";
                 else ret[j][i] = "_";
             }
         }

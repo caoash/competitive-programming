@@ -1,0 +1,53 @@
+#include <bits/stdc++.h> 
+using namespace std;
+
+typedef long long ll;
+
+#define F0R(i, x, y) for (int i = x; i < y; i++)
+#define FOR(i, n) for (int i = 0; i < n; i++)
+
+#define F first
+#define S second
+
+mt19937 rnd(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+void Solve() {
+    int n, k; cin >> n >> k;
+    string s; cin >> s;
+    string g;
+    FOR(i, n) {
+        if (s[i] == '0') g[i] = '1';
+        else g[i] = '0';
+    }
+    set<int> vals;
+    FOR(i, n - k + 1) {
+        hashes.insert(inv.query(i, i + k - 1));
+    }
+    int tri = 0;
+    auto Test = [&] () {
+         
+    };
+    while (1) {
+        
+    }
+}
+
+int main() {
+#ifdef mikey 
+    freopen("a.in", "r", stdin);
+#endif
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    auto Prime = [&] (int x) {
+        for (int i = 2; (ll) (i * i) <= x; i++) {
+            if (x % i == 0) return false;
+        }
+        return true;
+    };
+    while (!Prime(MOD)) ++MOD;
+    int T; cin >> T;
+    while (T--) {
+        Solve();
+    }
+}
+

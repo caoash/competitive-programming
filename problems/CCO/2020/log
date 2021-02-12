@@ -1,0 +1,37 @@
+15:09 - read p1
+- first react: line sweep
+- figure out where intervals intersect y = Y, sweep, for each range count how many friends you intersect
+- propogate array
+- consider list of doubles representing points
+[0.3, 0.6, 0.9, 1.5]
+- some are --#pts, others are ++#pts
+
+if (++)
+num[ans] += ints(cur, prev)
+++ans;
+else 
+--ans;
+num[ans] += ints(cur, prev)
+
+how to find when some slope hits line
+
+0 = slope(st x) + b
+
+solve for b
+
+10 = mx + b
+
+15:17 - code
+
+16:54 - AC
+
+16:55 - read p2
+
+- some greedy 
+
+- go backwards, N must be last, then you can just do greedy + DS?
+
+17:20 - start coding
+
+17:53 - AC
+
