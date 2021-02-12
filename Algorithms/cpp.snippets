@@ -61,7 +61,7 @@ template < int SZ > struct DSU {
       sz[a] += sz[b];
     }
   }
-}
+};
 endsnippet
 
 snippet binpow "mod expo"
@@ -80,7 +80,7 @@ endsnippet
 
 snippet segtree "Lazy Segment Tree"
 template < class T, int SZ > struct LazySeg {
-  T tree[SZ], lazy[SZ];
+  T tree[4 * SZ], lazy[4 * SZ];
   T merge(T a, T b) {
     return a + b;
   }
@@ -95,10 +95,10 @@ template < class T, int SZ > struct LazySeg {
     }
   }
   void update(int v, int l, int r, int ql, int qr, int x) {
+    prop(v, l, r);
     if (r < ql || l > qr) {
       return;
     }
-    prop(v, l, r);
     if (l >= ql && r <= qr) {
       tree[v] += x;
       if (l != r) {
@@ -114,10 +114,10 @@ template < class T, int SZ > struct LazySeg {
   }
 
   T query(int v, int l, int r, int ql, int qr) {
+    prop(v, l, r);
     if (l > qr || r < ql) {
       return 0;
     }
-    prop(v, l, r);
     if (l >= ql && r <= qr) {
       return tree[v];
     } else {
@@ -148,14 +148,14 @@ template < int SZ > struct LCA {
       }
     }
   }
-  void precomp() {
+  void precomp(int root) {
     for (int i = 0; i < SZ; i++) {
       for (int j = 0; j < 32; j++) {
         p[i][j] = -1;
       }
     }
-    p[0][0] = 0;
-    dfs(0, -1);
+    p[root][0] = 0;
+    dfs(root, -1);
     for (int j = 1; j < 32; j++) {
       for (int i = 0; i < SZ; i++) {
         if (p[i][j - 1] == -1) {
@@ -188,7 +188,8 @@ template < int SZ > struct LCA {
 endsnippet
 
 snippet Hash "hashing"
-struct Hash {
+
+template<int MX> struct Hash {
   ll hsh[MX], invs[MX], mxp[MX];
   ll modexpo(ll a, ll b, ll m) {
     a %= m;
@@ -211,8 +212,8 @@ struct Hash {
     mxp[0] = 1;
     invs[0] = 1;
     invs[1] = modexpo(BASE, MOD - 2, MOD);
-    f0x(i, 2, MX) invs[i] = (invs[i - 1] * invs[1]) % MOD;
-    f0x(i, 1, sz(s)) {
+    F0R(i, 2, MX) invs[i] = (invs[i - 1] * invs[1]) % MOD;
+    F0R(i, 1, (int) s.size()) {
       mxp[i] = (mxp[i - 1] * BASE) % MOD;
       hsh[i] = (hsh[i - 1] + mxp[i] * (s[i] - 'a')) % MOD;
     }
@@ -220,7 +221,7 @@ struct Hash {
   }
 
   ll qry(int l, int r) {
-    ll lft = (l == 0 ? 0 LL : hsh[l - 1]);
+    ll lft = (l == 0 ? 0LL : hsh[l - 1]);
     return ((((hsh[r] - lft) + MOD) % MOD) * invs[l]) % MOD;
   }
 };
@@ -281,7 +282,7 @@ namespace output {
     pr(ts...);
   }
   template < class T1, class T2 > void pr(const pair < T1, T2 > & x) {
-    pr("{", x.f, ", ", x.s, "}");
+    pr("{", x.F, ", ", x.S, "}");
   }
   template < class T > void pr(const T & x) {
     pr("{"); // const iterator needed for vector<bool>
@@ -312,8 +313,11 @@ namespace output {
   #define dbg(x...) pr("[", #x, "] = ["), pc(x);
 }
 
-#ifdef LOCAL
+#ifdef mikey 
 using namespace output;
+#else
+using namespace output;
+#define dbg(x...)
 #endif
 endsnippet
 
@@ -412,7 +416,71 @@ using namespace __gnu_pbds;
 gp_hash_table<int, int> table;
 endsnippet
 
-snippet fenwick "binary indexed tree"
+snippet treegen "tree generator"
+#include <bits/stdc++.h>
+using namespace std;
+
+int rand(int a, int b) {
+    return a + rand() % (b - a + 1);
+}
+
+int main(int argc, char* argv[]) {
+    srand(atoi(argv[1]));
+    int n = rand(2, 20);
+    printf("%d\n", n);
+    vector<pair<int,int>> edges;
+    for(int i = 2; i <= n; ++i) {
+        edges.emplace_back(rand(1, i - 1), i);
+    }
+    
+    vector<int> perm(n + 1); // re-naming vertices
+    for(int i = 1; i <= n; ++i) {
+        perm[i] = i;
+    }
+    random_shuffle(perm.begin() + 1, perm.end());
+    
+    random_shuffle(edges.begin(), edges.end()); // random order of edges
+    
+    for(pair<int, int> edge : edges) {
+        int a = edge.first, b = edge.second;
+        if(rand() % 2) {
+            swap(a, b); // random order of two vertices
+        }
+        printf("%d %d %d\n", perm[a], perm[b], rand(1,15));
+    }
+}
+endsnippet
+
+snippet gen "normal generator template"
+#include <bits/stdc++.h>
+using namespace std;
+
+int rand(int a, int b){
+	return a + rand()%(b-a+1);
+}
+
+void gen(){
+  
+}
+
+int main(int argc, char* argv[]){
+    srand(atoi(argv[1]));
+    gen();	
+}
+endsnippet
+
+snippet pbds "peanut butter"
+#include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+template <class T> using PeanutButter = tree<T, null_type, less<T>, 
+	rb_tree_tag, tree_order_statistics_node_update>; 
+
+#define ook order_of_key
+#define fbo find_by_order
+endsnippet
+
+snippet fenwick "fenwick tree"
 template<class T, int SZ> struct BIT {
     T bit[SZ + 1];
     void upd(int p, int x) {
@@ -428,3 +496,4 @@ template<class T, int SZ> struct BIT {
     }
 };
 endsnippet
+
