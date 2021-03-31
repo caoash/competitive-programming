@@ -1,0 +1,44 @@
+#include <bits/stdc++.h> 
+using namespace std;
+ 
+typedef long long ll;
+ 
+#define F0R(i, x, y) for (int i = x; i < y; i++)
+#define FOR(i, n) F0R(i, 0, n)
+#define F0RD(i, x, y) for (int i = y - 1; i >= x; i--)
+#define FORD(i, n) F0RD(i, 0, n)
+ 
+#define F first
+#define S second
+
+void Solve() {
+    int N, K; cin >> N >> K;
+    string s; cin >> s;
+    vector<int> cnt(26);
+    string alph = "abcdefghijklmnopqrstuvwxyz";
+    FOR(i, N) {
+        FOR(j, 26) {
+            cnt[j]++;
+            vector<int> need(26);
+            FOR(k, 26) {
+                need[k] += ((K - (cnt[k] % K)) % K);
+            }
+        }
+        cnt[s[i] - 'a']++;
+    }
+    cout << -1 << '\n';
+    return;
+}
+ 
+int main() {
+#ifdef mikey 
+    freopen("a.in", "r", stdin);
+#endif
+    ios::sync_with_stdio(false);
+    cin.tie(0);    
+    int T; cin >> T;
+    while (T--) {
+        Solve();
+    }
+}
+
